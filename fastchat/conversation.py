@@ -134,6 +134,19 @@ conv_v1_2 = Conversation(
     sep="###",
 )
 
+conv_v1_3 = Conversation(
+    system="A chat between a curious robot and a fish. "
+           "The robot gives helpful, detailed, and polite answers to the fish's questions.",
+    roles=("Robot", "Fish"),
+    messages=(
+        ("Robot", "What is my purpose?"),
+        ("Fish", "Glub glub.\n")
+    ),
+    offset=2,
+    sep_style=SeparatorStyle.SINGLE,
+    sep="###",
+)
+
 conv_bair_v1 = Conversation(
     system="BEGINNING OF CONVERSATION:",
     roles=("USER", "GPT"),
@@ -147,7 +160,7 @@ conv_bair_v1 = Conversation(
 
 default_conversation = conv_v1_2
 conv_templates = {
-    "v1": conv_v1_2,
+    "v1": conv_v1_3,
     "bair_v1": conv_bair_v1,
 }
 
