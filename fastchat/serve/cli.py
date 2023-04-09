@@ -94,7 +94,7 @@ def main(args):
         raise ValueError(f"Invalid device: {args.device}")
 
     tokenizer = AutoTokenizer.from_pretrained(model_name)
-    
+
     if args.wbits > 0:
         from fastchat.serve.load_gptq_model import load_quantized
 
@@ -102,7 +102,7 @@ def main(args):
         model = load_quantized(model_name)
     else:
         model = AutoModelForCausalLM.from_pretrained(model_name,
-            low_cpu_mem_usage=True, **kwargs)
+                                                     low_cpu_mem_usage=True, **kwargs)
 
     if args.device == "cuda" and num_gpus == 1:
         model.cuda()
@@ -151,12 +151,13 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--model-name", type=str, default="facebook/opt-350m")
     parser.add_argument("--num-gpus", type=str, default="1")
-    parser.add_argument("--device", type=str, choices=["cuda", "cpu"], default="cuda")
+    parser.add_argument("--device", type=str,
+                        choices=["cuda", "cpu"], default="cuda")
     parser.add_argument("--conv-template", type=str, default="v1")
     parser.add_argument("--temperature", type=float, default=0.7)
     parser.add_argument("--max-new-tokens", type=int, default=512)
     parser.add_argument("--debug", action="store_true")
-    parser.add_argument("--wbits", type=int, default = 0)
-    parser.add_argument("--groupsize", type=int, default = 0)
+    parser.add_argument("--wbits", type=int, default=0)
+    parser.add_argument("--groupsize", type=int, default=0)
     args = parser.parse_args()
     main(args)
