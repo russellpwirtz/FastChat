@@ -12,14 +12,14 @@ from fastchat.conversation import conv_templates, SeparatorStyle
 
 
 @torch.inference_mode()
-def generate_stream(tokenizer, model, params, device,
-                    context_len=2048, stream_interval=2):
+def generate_stream(tokenizer, model, params, device, stream_interval=2):
     """Adapted from fastchat/serve/model_worker.py::generate_stream"""
 
     prompt = params["prompt"]
     l_prompt = len(prompt)
     temperature = float(params.get("temperature", 1.0))
     max_new_tokens = int(params.get("max_new_tokens", 256))
+    context_len = int(params.get("context_len", 2056))
     stop_str = params.get("stop", None)
 
     input_ids = tokenizer(prompt).input_ids
@@ -107,6 +107,8 @@ def main(args):
     if args.device == "cuda" and num_gpus == 1:
         model.cuda()
 
+    print(f"Running model template: {args.conv_template}")
+
     # Chat
     conv = conv_templates[args.conv_template].copy()
     while True:
@@ -127,6 +129,7 @@ def main(args):
             "prompt": prompt,
             "temperature": args.temperature,
             "max_new_tokens": args.max_new_tokens,
+            "context_len": args.context_len,
             "stop": conv.sep if conv.sep_style == SeparatorStyle.SINGLE else conv.sep2,
         }
 
@@ -158,6 +161,7 @@ if __name__ == "__main__":
     parser.add_argument("--max-new-tokens", type=int, default=512)
     parser.add_argument("--debug", action="store_true")
     parser.add_argument("--wbits", type=int, default=0)
+    parser.add_argument("--context-len", type=int, default=2056)
     parser.add_argument("--groupsize", type=int, default=0)
     args = parser.parse_args()
     main(args)
